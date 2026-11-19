@@ -1,0 +1,25 @@
+# =============================================================================
+# Source BCE: tipos de cambio oficiales del Banco Central Europeo en Bronze.
+# =============================================================================
+version: 2
+
+sources:
+  - name: bce
+    description: >
+      Fichero oficial eurofxref-hist.csv del BCE: 1 EUR = x moneda, un día hábil
+      por fila y una columna por moneda (formato ancho).
+    database: "{{ env_var('DBT_BRONZE_DB') }}"
+    schema: BCE
+    config:
+      loaded_at_field: _loaded_at
+      freshness:
+        warn_after: {count: 15, period: day}
+        error_after: {count: 30, period: day}
+
+    tables:
+      - name: tipos_cambio
+        description: 1 fila = un día hábil (1999-2026). Sin fines de semana ni festivos.
+        columns:
+          - name: date
+            description: Fecha de la cotización (texto AAAA-MM-DD).
+            data_tests: [not_null]
