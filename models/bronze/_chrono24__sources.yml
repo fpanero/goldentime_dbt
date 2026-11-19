@@ -1,0 +1,31 @@
+# =============================================================================
+# Source CHRONO24: anuncios reales de Chrono24 (julio 2023) en Bronze.
+# 18 ficheros en 2 formatos cargados en UNA tabla (script 02).
+# =============================================================================
+version: 2
+
+sources:
+  - name: chrono24
+    description: >
+      Anuncios reales de relojes de lujo en Chrono24, capturados del 12/07 al
+      01/08/2023 (dataset público, licencia MIT). Son precios pedidos, no ventas.
+    database: "{{ env_var('DBT_BRONZE_DB') }}"
+    schema: CHRONO24
+    config:
+      loaded_at_field: _loaded_at
+      freshness:
+        warn_after: {count: 15, period: day}
+        error_after: {count: 30, period: day}
+
+    tables:
+      - name: mercado_anuncios
+        description: >
+          1 fila = un anuncio. Lleva las columnas de los dos formatos del scraper
+          (title/condition/movement/gender en rolex1 y rolex2; name/cond/mvmt/sex
+          en el resto): cada fila rellena las suyas.
+        columns:
+          - name: _fichero_origen
+            description: Fichero CSV del que viene la fila.
+            data_tests: [not_null]
+          - name: price
+            description: Precio pedido como texto ("$19,995", "Price on request").

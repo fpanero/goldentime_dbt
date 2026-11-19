@@ -1,0 +1,59 @@
+# =============================================================================
+# GoldenTime · dbt_project.yml
+# Configuración central del proyecto: nombre, rutas y configuración por carpeta.
+# Misma estructura que el proyecto del curso (curso_data_engineering).
+# =============================================================================
+name: goldentime                 # la config por carpetas de abajo cuelga de este nombre
+version: '1.0.0'
+profile: default                 # solo para dbt local; en dbt Platform no se usa
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+analysis-paths: ["analyses"]
+docs-paths: ["docs"]
+
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  goldentime:
+    +transient: false            # tablas normales, con Fail-safe
+
+    # Bronze: solo YAML de sources. dbt no construye nada aquí.
+
+    staging:                     # stg_: renombrar y poner tipos, 1:1 con Bronze
+      +materialized: view
+      +database: "{{ env_var('DBT_SILVER_DB') }}"
+      erp:
+        +schema: erp
+      chrono24:
+        +schema: chrono24
+      bce:
+        +schema: bce
+
+    silver:                      # slv_: una tabla por entidad del modelo lógico
+      +materialized: table
+      +database: "{{ env_var('DBT_SILVER_DB') }}"
+      erp:                       # mismo schema que su staging, como en el curso
+        +schema: erp
+      chrono24:
+        +schema: chrono24
+      bce:
+        +schema: bce
+
+    gold:                        # modelo dimensional
+      +materialized: table
+      +database: "{{ env_var('DBT_GOLD_DB') }}"
+      intermediate:
+        +materialized: view
+        +schema: intermediate
+      core:                      # dim_ y fct_
+        +schema: core
+        +grants:
+          select: ['GT_REPORTING_ROLE']   # el dashboard solo lee Gold (día 8)
+
+seeds:
+  goldentime:
+    +database: "{{ env_var('DBT_SILVER_DB') }}"
+    +schema: seeds

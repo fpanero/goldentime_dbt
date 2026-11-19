@@ -1,0 +1,67 @@
+# =============================================================================
+# Source ERP: las 5 exportaciones del ERP de GoldenTime en Bronze.
+# dbt no carga ni cambia estas tablas (lo hizo Snowflake con COPY INTO):
+# solo las declara para leerlas con {{ source('erp', '<tabla>') }}.
+# =============================================================================
+version: 2
+
+sources:
+  - name: erp
+    description: >
+      Exportaciones del ERP de GoldenTime (datos del cliente). Llegan tal cual,
+      todas las columnas en texto, con dos metadatos: _fichero_origen y _loaded_at.
+    database: "{{ env_var('DBT_BRONZE_DB') }}"   # el mismo YAML sirve en DEV, PRE y PRO
+    schema: ERP
+    config:
+      loaded_at_field: _loaded_at
+      freshness:                 # histórico cerrado cargado una vez (ver diario)
+        warn_after: {count: 15, period: day}
+        error_after: {count: 30, period: day}
+
+    tables:
+      - name: tiendas
+        description: Tiendas físicas y canal online (1 fila = tienda).
+        columns:
+          - name: tienda_id
+            description: Identificador de la tienda en el ERP.
+            data_tests: [not_null]
+
+      - name: contactos
+        description: CRM único de particulares y dealers (1 fila = contacto).
+        columns:
+          - name: contacto_id
+            description: Identificador del contacto en el ERP. Los dealers empiezan en 70001.
+            data_tests: [not_null]
+          - name: tipo_contacto
+            description: Particular o Dealer.
+            data_tests: [not_null]
+
+      - name: referencias
+        description: Catálogo de modelos de reloj (1 fila = referencia, con duplicados escritos de otra forma).
+        columns:
+          - name: referencia_id
+            description: Identificador de la referencia en el ERP.
+            data_tests: [not_null]
+
+      - name: operaciones
+        description: Libro único de compras y ventas (1 fila = operación).
+        columns:
+          - name: operacion_id
+            description: Identificador de la operación en el ERP.
+            data_tests: [not_null]
+          - name: tipo_operacion
+            description: COMPRA o VENTA.
+            data_tests: [not_null]
+          - name: pieza_id
+            description: Identificador del reloj físico al que afecta la operación.
+            data_tests: [not_null]
+
+      - name: historial_pieza
+        description: Eventos de cada reloj, taller y cambios de precio (1 fila = evento).
+        columns:
+          - name: evento_id
+            description: Identificador del evento en el ERP.
+            data_tests: [not_null]
+          - name: pieza_id
+            description: Identificador del reloj físico.
+            data_tests: [not_null]
