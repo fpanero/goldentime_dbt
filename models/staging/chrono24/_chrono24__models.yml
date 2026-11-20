@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: stg_chrono24__mercado_anuncios
+    description: >
+      Anuncios de Chrono24 (julio 2023) con nombres en español, 1:1 con Bronze.
+      Las columnas _a son del formato de rolex1/rolex2 y las _b del resto de
+      ficheros: en cada fila solo está relleno uno de los dos grupos.
+      1 fila = un anuncio (con los duplicados: se quitan en Silver).
+    columns:
+      - name: fichero_origen
+        description: Fichero CSV del que viene el anuncio (18 ficheros).
+        data_tests: [not_null]
+      - name: precio_original
+        description: Precio como texto, tal cual ("$19,995 ", "Price on request").
+      - name: precio_usd
+        description: Precio pedido en dólares. NULL si es "Price on request".
+      - name: marca_anunciada
+        description: >
+          Marca escrita en el anuncio. Vacía en los anuncios cuya ficha no
+          llegó a descargar el scraper (sin precio ni datos): es un fallo del
+          origen, no de staging. Staging no filtra (1:1); Silver los descarta.
+        data_tests:
+          - not_null:
+              config:
+                severity: warn   # avisa, pero no para el build

@@ -1,0 +1,94 @@
+version: 2
+
+models:
+  - name: stg_erp__tiendas
+    description: Tiendas del ERP con nombres de negocio y tipos. 1 fila = una tienda (13).
+    columns:
+      - name: id_tienda
+        description: Identificador de la tienda (tienda_id del ERP).
+        data_tests: [not_null, unique]
+      - name: codigo_moneda
+        description: Moneda local de la tienda (EUR, CHF o GBP).
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['EUR', 'CHF', 'GBP']
+
+  - name: stg_erp__referencias
+    description: >
+      Catálogo del ERP con nombres de negocio y tipos, con todas sus columnas. 1 fila = una referencia (1.569),
+      incluidas las repetidas con otra escritura (se resuelven en Silver).
+    columns:
+      - name: id_referencia
+        description: Identificador de la referencia (referencia_id del ERP).
+        data_tests: [not_null, unique]
+      - name: nombre_marca
+        description: Marca del reloj (18).
+        data_tests: [not_null]
+      - name: referencia_original
+        description: Referencia tal como viene del ERP (126334, M126334-0001, iw3 88102...).
+        data_tests: [not_null]
+
+  - name: stg_erp__contactos
+    description: >
+      Contactos del CRM con nombres de negocio y tipos, con todas sus columnas
+      (también los datos personales: se protegen con masking policy en Silver).
+      1 fila = un contacto (60.249).
+    columns:
+      - name: id_contacto
+        description: Identificador del contacto (contacto_id del ERP). Los dealers empiezan en 70001.
+        data_tests: [not_null, unique]
+      - name: tipo_contacto
+        description: Particular o Dealer.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Particular', 'Dealer']
+      - name: fecha_alta
+        description: Fecha de alta en el CRM.
+        data_tests: [not_null]
+
+  - name: stg_erp__operaciones
+    description: >
+      Libro de compras y ventas con nombres de negocio y tipos. 1 fila = una
+      operación (293.017: 150.000 compras y 143.017 ventas, con 716 duplicadas).
+    columns:
+      - name: id_operacion
+        description: Identificador de la operación (operacion_id del ERP).
+        data_tests: [not_null, unique]
+      - name: tipo_operacion
+        description: COMPRA o VENTA.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['COMPRA', 'VENTA']
+      - name: fecha_operacion
+        description: Fecha de la operación, convertida desde 4 formatos de texto.
+        data_tests: [not_null]
+      - name: id_reloj_fisico
+        description: Reloj físico de la operación (pieza_id del ERP).
+        data_tests: [not_null]
+      - name: importe
+        description: Importe en la moneda de la operación, convertido desde 3 formatos de texto.
+        data_tests: [not_null]
+
+  - name: stg_erp__historial_pieza
+    description: >
+      Eventos de cada reloj con nombres de negocio y tipos. 1 fila = un evento
+      (564.209: 77.561 de taller y 486.648 cambios de precio).
+    columns:
+      - name: id_evento
+        description: Identificador del evento (evento_id del ERP).
+        data_tests: [not_null, unique]
+      - name: id_reloj_fisico
+        description: Reloj físico del evento (pieza_id del ERP).
+        data_tests: [not_null]
+      - name: tipo_evento
+        description: TALLER o CAMBIO_PRECIO.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['TALLER', 'CAMBIO_PRECIO']
+      - name: fecha_evento
+        description: Fecha del evento (entrada al taller o fecha del cambio de precio).
+        data_tests: [not_null]
