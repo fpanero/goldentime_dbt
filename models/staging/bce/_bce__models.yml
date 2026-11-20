@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: stg_bce__tipos_cambio
+    description: >
+      Tipos de cambio del BCE con tipos de dato, con las 41 monedas (1:1 con
+      Bronze). 1 fila = un día hábil (formato ancho, igual que Bronze).
+      Columnas <moneda>_por_euro: unidades de esa moneda por 1 euro.
+    columns:
+      - name: fecha
+        description: Día de la cotización.
+        data_tests: [not_null, unique]
+      - name: chf_por_euro
+        description: Francos suizos por 1 euro (moneda de Ginebra y Zúrich).
+      - name: gbp_por_euro
+        description: Libras esterlinas por 1 euro (moneda de Londres).
+      - name: usd_por_euro
+        description: Dólares estadounidenses por 1 euro (precios de Chrono24).
