@@ -3,8 +3,6 @@
 -- Staging: renombrar y poner tipos. 1:1 en filas con Bronze.
 -- Dos tipos de evento en la misma tabla: TALLER (intervenciones) y
 -- CAMBIO_PRECIO. Silver los separa en dos tablas.
--- Aquí los formatos llegan limpios (fechas ISO, importes con punto decimal):
--- basta con un cambio de tipo directo.
 -- =============================================================================
 
 with source as (

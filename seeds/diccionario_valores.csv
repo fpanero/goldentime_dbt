@@ -1,6 +1,7 @@
 campo,valor_original,valor_limpio
 estado,SIN USAR,Sin usar
 estado,UNWORN,Sin usar
+estado,NEW,Sin usar
 estado,NUEVO,Sin usar
 estado,MUY BUENO,Muy bueno
 estado,MB,Muy bueno
@@ -10,8 +11,11 @@ estado,B,Bueno
 estado,GOOD,Bueno
 estado,ACEPTABLE,Aceptable
 estado,REGULAR,Aceptable
+estado,FAIR,Aceptable
 estado,DEFICIENTE,Deficiente
 estado,MALO,Deficiente
+estado,POOR,Deficiente
+estado,INCOMPLETE,Deficiente
 moneda,EUR,EUR
 moneda,EURO,EUR
 moneda,€,EUR
@@ -54,3 +58,5 @@ pais,AUSTRIA,Austria
 pais,ESTADOS UNIDOS,Estados Unidos
 pais,HONG KONG,Hong Kong
 pais,EMIRATOS ÁRABES,Emiratos Árabes
+genero,MEN'S WATCH/UNISEX,Hombre/Unisex
+genero,WOMEN'S WATCH,Mujer

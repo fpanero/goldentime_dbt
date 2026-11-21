@@ -3,10 +3,7 @@
 -- Silver: limpia y deduplica el catálogo.
 --   1. Normaliza la referencia (macro normalizar_referencia).
 --   2. Corrige las erratas del nombre del modelo (seed correccion_nombre_modelo).
---   3. Deduplica: 69 referencias están repetidas con otra escritura y 3 de
---      Panerai vienen así del catálogo real. Clave natural = marca + referencia
---      (79160 y 79190 existen en Rolex Y en Tudor). Se queda la fila original
---      del catálogo: la de menor id_referencia.
+--   3. Clave natural = marca + referencia
 -- Las compras que apuntan a una copia se reasignan en slv_erp__reloj_fisico.
 -- =============================================================================
 

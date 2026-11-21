@@ -1,13 +1,8 @@
 -- =============================================================================
 -- slv_erp__venta · 1 fila = una venta (142.301)
 -- Silver: las filas VENTA de operaciones.
---   - Duplicados: 716 ventas están dos veces (misma pieza, mismos datos, otro
---     id de operación). Un reloj se vende una sola vez: se queda la de menor
---     id_operacion (qualify row_number, como en la plantilla del curso).
 --   - Moneda unificada con el seed diccionario_valores.
 --   - id_contacto admite NULL: 1.753 ventas sin cliente identificado.
---   - Fuera: descuento_pct. Se calcula con precio_lista e importe, y en el
---     ERP trae 318 negativos imposibles.
 -- =============================================================================
 
 with ventas as (

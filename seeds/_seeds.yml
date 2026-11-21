@@ -27,7 +27,8 @@ seeds:
     description: >
       Diccionario de limpieza: cada forma en que el ERP escribe un valor
       (en MAYÚSCULAS, para comparar sin importar mayúsculas) y su valor limpio.
-      Campos: estado (18 escrituras → 5), moneda (14 → 4) y pais (34 → 14).
+      Campos: estado (18 escrituras del ERP y 7 de Chrono24 → 5), moneda
+      (14 → 4), pais (34 → 14) y genero (Chrono24 → los valores del ERP).
       Las tablas de Silver lo cruzan con un left join: si aparece una escritura
       nueva, sale NULL, el test not_null de Silver avisa y se añade una línea aquí.
     data_tests:
@@ -39,7 +40,7 @@ seeds:
         data_tests:
           - accepted_values:
               arguments:
-                values: ['estado', 'moneda', 'pais']
+                values: ['estado', 'moneda', 'pais', 'genero']
       - name: valor_original
         data_tests: [not_null]
       - name: valor_limpio

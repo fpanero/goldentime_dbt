@@ -1,9 +1,5 @@
 -- =============================================================================
 -- slv_erp__marca · 1 fila = una marca (18)
--- Silver: la marca llega como texto repetido en cada referencia del catálogo;
--- aquí pasa a ser una tabla propia (3FN, entidad del modelo conceptual).
--- Clave subrogada con dbt_utils.generate_surrogate_key (hash del nombre):
--- siempre sale la misma para la misma marca, aunque se reconstruya la tabla.
 -- =============================================================================
 
 with referencias as (

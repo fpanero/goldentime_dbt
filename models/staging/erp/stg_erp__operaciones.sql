@@ -1,14 +1,9 @@
 -- =============================================================================
 -- stg_erp__operaciones · 1 fila = una compra o una venta (293.017)
--- Staging: 1:1 con Bronze en filas Y columnas (las 18). Las 716 ventas
--- duplicadas siguen aquí; Silver separa compra / venta / reloj y deduplica.
---
+-- Staging: 1:1 con Bronze en filas Y columnas (las 18). 
 -- Tipos: las fechas (4 formatos), los importes (3 formatos) y los sí/no
 -- (9 formas) se convierten con las macros de macros/limpieza/, porque se
--- repiten en varios modelos. Unificar valores escritos de muchas formas
--- (moneda "Euro"/"€"/"eur", estado "MB"/"Very good", canal, empleado en
--- mayúsculas) es limpieza: se hace en Silver. Aquí se guardan tal cual, con
--- el sufijo _original.
+-- repiten en varios modelos. 
 -- =============================================================================
 
 with source as (

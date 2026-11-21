@@ -3,11 +3,6 @@
 -- Silver:
 --   - Solo CHF, GBP y USD: las monedas del negocio (EUR no necesita tipo:
 --     vale 1). Las otras 38 se quedan en staging y Bronze.
---   - Solo 2019–2025: los años del negocio.
---   - De ancho (una columna por moneda) a largo (una fila por moneda y día)
---     con UNPIVOT de Snowflake: así es una tabla en 3FN con PK (fecha, moneda)
---     y se une a cualquier operación por fecha y moneda.
---   UNPIVOT descarta los NULL: un día sin cotización no genera fila.
 -- =============================================================================
 
 with tipos as (

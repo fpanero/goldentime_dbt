@@ -1,10 +1,8 @@
 -- =============================================================================
 -- slv_erp__compra · 1 fila = una compra (150.000)
 -- Silver: las filas COMPRA de operaciones, solo con lo que es de la compra
--- (los datos del reloj viven en slv_erp__reloj_fisico: 3FN).
 --   - Moneda: 14 escrituras ("Euro", "€", "Fr.", "US$"...) → EUR, CHF, GBP,
 --     USD, con el seed diccionario_valores.
---   - Empleado: misma clave que slv_erp__empleado (misma fórmula).
 --   - Fuera: canal (en las compras siempre "Tienda").
 -- =============================================================================
 

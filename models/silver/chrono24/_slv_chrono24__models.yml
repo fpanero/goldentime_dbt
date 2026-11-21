@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: slv_chrono24__anuncio_mercado
+    description: >
+      Anuncios de Chrono24 (julio 2023), limpios y sin duplicados.
+      1 fila = un anuncio (283.843). Precio pedido en USD.
+    columns:
+      - name: id_anuncio
+        description: Clave subrogada (hash de la URL).
+        data_tests: [not_null, unique]
+      - name: url_anuncio
+        description: Clave natural.
+        data_tests: [not_null, unique]
+      - name: id_modelo_reloj
+        description: Modelo del catálogo si marca + referencia casan (~39 %); NULL si no.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('slv_erp__modelo_reloj')
+                field: id_modelo_reloj
+      - name: marca_anunciada
+        data_tests: [not_null]
+      - name: estado_anuncio
+        description: Estado traducido a los 5 valores del ERP. NULL si el anuncio no lo indica.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Sin usar', 'Muy bueno', 'Bueno', 'Aceptable', 'Deficiente']
+      - name: genero
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Hombre/Unisex', 'Mujer']

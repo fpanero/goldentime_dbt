@@ -3,16 +3,9 @@
 -- Silver: limpia los valores del CRM. No une, no filtra.
 --   - país: 34 escrituras ("ES", "Spain", "españa"...) → 14 países, con el
 --     seed diccionario_valores.
---   - nombre y apellidos de particulares en MAYÚSCULAS → "Nombre Apellido"
---     (initcap). Los dealers no: "GmbH" se rompería.
 --   - email: minúsculas, sin espacios, "@@" → "@"; es_email_valido marca los
 --     que siguen sin ser un email (por ejemplo, sin @): no se inventan.
 --   - teléfono: 4 formatos → uno solo, internacional (+34600966230).
---     Los 9 dígitos sin prefijo son todos de España (comprobado).
---   - Datos personales (nombre, apellidos, email, teléfono): se protegen con
---     masking policy en Snowflake.
--- Limitación declarada: ~3 % de particulares están duplicados con otro email;
--- no se fusionan porque ningún caso de uso cuenta clientes únicos.
 -- =============================================================================
 
 with contactos as (

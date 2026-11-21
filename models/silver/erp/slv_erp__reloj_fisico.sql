@@ -1,16 +1,9 @@
 -- =============================================================================
 -- slv_erp__reloj_fisico · 1 fila = un reloj concreto (150.000)
 -- Silver: sale de las filas COMPRA de operaciones (cada reloj entra una vez).
---   - Modelo: la compra apunta a una referencia del catálogo, y 2.114 compras
---     apuntan a una COPIA que se quitó en slv_erp__modelo_reloj. Se reasignan
---     al modelo bueno buscando por marca + referencia normalizada (la misma
---     macro normalizar_referencia).
+--   - Modelo: la compra apunta a una referencia del catálogo.
 --   - Estado: 18 escrituras ("MB", "Very good", "MUY BUENO"...) → 5 valores,
 --     con el seed diccionario_valores.
---   - Año de fabricación imposible (0, 19, 1900, 2031, 9999) → NULL. Válido:
---     de 1950 al año de la compra.
---   - Tienda: el reloj se compra y se vende siempre en la misma (comprobado),
---     por eso vive aquí y no en compra ni en venta.
 -- =============================================================================
 
 with compras as (

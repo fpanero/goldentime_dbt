@@ -209,3 +209,59 @@ models:
               arguments:
                 to: ref('moneda')
                 field: codigo_moneda
+
+  - name: slv_erp__intervencion
+    description: Pasos por taller. 1 fila = una intervención (77.561).
+    columns:
+      - name: id_intervencion
+        data_tests: [not_null, unique]
+      - name: id_reloj_fisico
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_erp__reloj_fisico')
+                field: id_reloj_fisico
+      - name: tipo_intervencion
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Revisión completa', 'Pulido', 'Cambio de piezas']
+      - name: lugar_taller
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Interno', 'Servicio oficial de marca']
+      - name: fecha_entrada
+        data_tests: [not_null]
+      - name: fecha_salida
+        description: NULL si no se anotó (1.134) o si era anterior a la entrada (225).
+      - name: coste_eur
+        description: Coste en euros. NULL en 814 intervenciones sin coste anotado.
+
+  - name: slv_erp__cambio_precio
+    description: >
+      Rebajas y revalorizaciones del precio en vitrina, sin los cambios que no
+      cambian nada. 1 fila = un cambio (481.574).
+    columns:
+      - name: id_cambio_precio
+        data_tests: [not_null, unique]
+      - name: id_reloj_fisico
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_erp__reloj_fisico')
+                field: id_reloj_fisico
+      - name: tipo_cambio
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Rebaja', 'Revalorización']
+      - name: codigo_moneda
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('moneda')
+                field: codigo_moneda
