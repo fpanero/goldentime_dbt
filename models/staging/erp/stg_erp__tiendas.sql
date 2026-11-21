@@ -1,7 +1,6 @@
 -- =============================================================================
 -- stg_erp__tiendas · 1 fila = una tienda (13)
 -- Staging: renombrar a nombres de negocio y poner tipos. 1:1 con Bronze:
--- no filtra, no deduplica, no une.
 -- =============================================================================
 
 with source as (

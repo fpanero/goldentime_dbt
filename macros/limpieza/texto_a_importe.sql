@@ -5,9 +5,8 @@
         12.500,00 €            formato español: punto de miles, coma decimal
         £18,900 · CHF 5,119 · $3,463   formato inglés: coma de miles
     Regla: si lleva "€", el punto es de miles y la coma decimal; si no, la
-    coma es de miles y se quita. Comprobado en los 293.017 importes: ninguno
-    queda NULL y la venta nunca supera su precio de lista.
-    Dinero en NUMBER, nunca FLOAT (convención del curso).
+    coma es de miles y se quita.
+  
 -#}
 {% macro texto_a_importe(columna) -%}
     case

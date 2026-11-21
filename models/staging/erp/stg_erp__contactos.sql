@@ -1,9 +1,7 @@
 -- =============================================================================
 -- stg_erp__contactos · 1 fila = un contacto del CRM (60.249)
 -- Staging: 1:1 con Bronze en filas Y columnas (las 14). Solo renombrar y
--- poner tipos: no filtra, no deduplica, no unifica valores.
--- Datos personales (nombre, apellidos, email, teléfono): pasan, como manda el
--- 1:1; se protegen con masking policy en Silver.
+-- poner tipos.
 -- =============================================================================
 
 with source as (

@@ -1,4 +1,3 @@
-# Único paquete del proyecto (decisión del 10/11/2026: simplicidad).
 #   · unpivot      → tipos de cambio del BCE, de una columna por moneda a filas
 #   · date_spine   → dim_fecha y el relleno de fines de semana
 #   · test unique_combination_of_columns → (fecha, moneda) sin duplicados

@@ -1,14 +1,9 @@
 {#-
     texto_a_fecha(columna)
     Convierte a DATE una fecha del ERP que puede venir en 4 formatos
-    (comprobado en los datos: 284.036 + 3.088 + 2.962 + 2.931 en operaciones):
-        2019-01-02          ISO (el normal)
-        02/01/2019          día/mes/año
-        02-01-19            día-mes-año con 2 cifras
-        2019/01/02 00:00    con hora
     Se mira el formato con una expresión regular antes de convertir: así una
     fecha nunca se lee con el formato equivocado. Si no encaja en ninguno,
-    devuelve NULL (y el test not_null lo detecta).
+    devuelve NULL.
 -#}
 {% macro texto_a_fecha(columna) -%}
     case

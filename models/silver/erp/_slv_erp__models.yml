@@ -1,0 +1,267 @@
+version: 2
+
+models:
+  - name: slv_erp__marca
+    description: Marcas del catálogo. 1 fila = una marca (18).
+    columns:
+      - name: id_marca
+        description: Clave subrogada (hash del nombre, dbt_utils.generate_surrogate_key).
+        data_tests: [not_null, unique]
+      - name: nombre_marca
+        description: Rolex, Omega, Patek Philippe...
+        data_tests: [not_null, unique]
+
+  - name: slv_erp__modelo_reloj
+    description: >
+      Catálogo limpio y sin duplicados. 1 fila = un modelo (1.497).
+      Referencia normalizada y nombre del modelo sin erratas.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['id_marca', 'referencia']
+    columns:
+      - name: id_modelo_reloj
+        description: id_referencia del ERP de la fila original (la de menor id si estaba repetida).
+        data_tests: [not_null, unique]
+      - name: id_marca
+        description: Marca del modelo.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_erp__marca')
+                field: id_marca
+      - name: referencia
+        description: Referencia normalizada (mayúsculas, sin espacios, sin M...-0001).
+        data_tests: [not_null]
+      - name: nombre_modelo
+        description: Nombre del modelo, con las erratas del ERP corregidas.
+        data_tests: [not_null]
+
+  - name: slv_erp__tienda
+    description: Tiendas y canal online. 1 fila = una tienda (13).
+    columns:
+      - name: id_tienda
+        data_tests: [not_null, unique]
+      - name: codigo_moneda
+        description: Moneda local de la tienda.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('moneda')
+                field: codigo_moneda
+
+  - name: slv_erp__empleado
+    description: >
+      Empleados que firman compras o ventas. 1 fila = un empleado (142).
+      Sale del nombre en texto de operaciones (el ERP no exporta RR. HH.).
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['nombre_empleado', 'id_tienda']
+    columns:
+      - name: id_empleado
+        description: Clave subrogada (hash de nombre en mayúsculas + tienda).
+        data_tests: [not_null, unique]
+      - name: nombre_empleado
+        data_tests: [not_null]
+      - name: id_tienda
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_erp__tienda')
+                field: id_tienda
+
+  - name: slv_erp__contacto
+    description: >
+      Particulares y dealers del CRM, limpios. 1 fila = un contacto (60.249).
+      Nombre, apellidos, email y teléfono son datos personales (masking policy).
+    columns:
+      - name: id_contacto
+        data_tests: [not_null, unique]
+      - name: tipo_contacto
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Particular', 'Dealer']
+      - name: pais
+        description: País unificado (14 valores). NULL = escritura que falta en el diccionario.
+        data_tests: [not_null]
+      - name: id_tienda_habitual
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('slv_erp__tienda')
+                field: id_tienda
+      - name: es_email_valido
+        description: FALSE si, tras limpiar, el email sigue sin tener forma de email (no se inventa).
+
+  - name: slv_erp__reloj_fisico
+    description: >
+      Relojes concretos. 1 fila = un reloj (150.000). Sale de las filas COMPRA.
+    columns:
+      - name: id_reloj_fisico
+        data_tests: [not_null, unique]
+      - name: numero_serie
+        data_tests: [not_null, unique]
+      - name: id_modelo_reloj
+        description: Modelo bueno del catálogo (las compras que apuntaban a una copia, reasignadas).
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_erp__modelo_reloj')
+                field: id_modelo_reloj
+      - name: id_tienda
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_erp__tienda')
+                field: id_tienda
+      - name: estado
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Sin usar', 'Muy bueno', 'Bueno', 'Aceptable', 'Deficiente']
+
+  - name: slv_erp__compra
+    description: Compras de relojes. 1 fila = una compra (150.000).
+    columns:
+      - name: id_compra
+        data_tests: [not_null, unique]
+      - name: id_reloj_fisico
+        description: 1:1 con reloj_fisico (cada reloj entra una vez).
+        data_tests:
+          - not_null
+          - unique
+          - relationships:
+              arguments:
+                to: ref('slv_erp__reloj_fisico')
+                field: id_reloj_fisico
+      - name: id_contacto
+        description: A quién se le compró (particular o dealer).
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_erp__contacto')
+                field: id_contacto
+      - name: id_empleado
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_erp__empleado')
+                field: id_empleado
+      - name: fecha_compra
+        data_tests: [not_null]
+      - name: importe
+        data_tests: [not_null]
+      - name: codigo_moneda
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('moneda')
+                field: codigo_moneda
+
+  - name: slv_erp__venta
+    description: Ventas de relojes, sin duplicados. 1 fila = una venta (142.301).
+    columns:
+      - name: id_venta
+        data_tests: [not_null, unique]
+      - name: id_reloj_fisico
+        description: 1:1 opcional con reloj_fisico (un reloj sin vender no tiene venta).
+        data_tests:
+          - not_null
+          - unique
+          - relationships:
+              arguments:
+                to: ref('slv_erp__reloj_fisico')
+                field: id_reloj_fisico
+      - name: id_contacto
+        description: Cliente. NULL en 1.753 ventas sin cliente identificado.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('slv_erp__contacto')
+                field: id_contacto
+      - name: id_empleado
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_erp__empleado')
+                field: id_empleado
+      - name: canal
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Tienda', 'Web', 'Teléfono/WhatsApp']
+      - name: codigo_moneda
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('moneda')
+                field: codigo_moneda
+
+  - name: slv_erp__intervencion
+    description: Pasos por taller. 1 fila = una intervención (77.561).
+    columns:
+      - name: id_intervencion
+        data_tests: [not_null, unique]
+      - name: id_reloj_fisico
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_erp__reloj_fisico')
+                field: id_reloj_fisico
+      - name: tipo_intervencion
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Revisión completa', 'Pulido', 'Cambio de piezas']
+      - name: lugar_taller
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Interno', 'Servicio oficial de marca']
+      - name: fecha_entrada
+        data_tests: [not_null]
+      - name: fecha_salida
+        description: NULL si no se anotó (1.134) o si era anterior a la entrada (225).
+      - name: coste_eur
+        description: Coste en euros. NULL en 814 intervenciones sin coste anotado.
+
+  - name: slv_erp__cambio_precio
+    description: >
+      Rebajas y revalorizaciones del precio en vitrina, sin los cambios que no
+      cambian nada. 1 fila = un cambio (481.574).
+    columns:
+      - name: id_cambio_precio
+        data_tests: [not_null, unique]
+      - name: id_reloj_fisico
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_erp__reloj_fisico')
+                field: id_reloj_fisico
+      - name: tipo_cambio
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Rebaja', 'Revalorización']
+      - name: codigo_moneda
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('moneda')
+                field: codigo_moneda

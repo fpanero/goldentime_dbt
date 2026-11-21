@@ -2,9 +2,7 @@
 -- stg_bce__tipos_cambio · 1 fila = un día hábil (7.092, de 1999 a 2026)
 -- Staging: 1:1 con Bronze en filas Y columnas: las 41 monedas.
 -- Para no escribir 41 líneas iguales, un bucle de Jinja genera una columna
--- por moneda (lo que se compila es SQL normal: míralo en "Compiled code").
--- Elegir CHF, GBP y USD, pasar a filas (unpivot) y filtrar 2019–2025 se hace
--- en Silver.
+-- por moneda.
 -- =============================================================================
 
 {%- set monedas = [

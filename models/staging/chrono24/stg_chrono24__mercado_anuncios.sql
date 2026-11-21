@@ -1,12 +1,7 @@
 -- =============================================================================
 -- stg_chrono24__mercado_anuncios · 1 fila = un anuncio de Chrono24 (julio 2023)
 -- Staging: 1:1 con Bronze en filas Y columnas (las 26 del scraper).
--- Las columnas vienen de DOS formatos de fichero: cada fila rellena las de su
--- formato y deja NULL las del otro. Aquí solo se les da nombre en español;
 -- juntar cada pareja (titulo_a / titulo_b → titulo...), quitar los anuncios
--- duplicados y extraer el diámetro de "42 mm" se hace en Silver.
--- Único cambio de tipo: el precio ("$19,995 " → 19995.00). "Price on request"
--- queda NULL. El año se guarda como texto: trae "Unknown" y "2013 (Approximation)".
 -- =============================================================================
 
 with source as (

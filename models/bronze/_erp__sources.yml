@@ -1,7 +1,5 @@
 # =============================================================================
 # Source ERP: las 5 exportaciones del ERP de GoldenTime en Bronze.
-# dbt no carga ni cambia estas tablas (lo hizo Snowflake con COPY INTO):
-# solo las declara para leerlas con {{ source('erp', '<tabla>') }}.
 # =============================================================================
 version: 2
 
@@ -10,11 +8,11 @@ sources:
     description: >
       Exportaciones del ERP de GoldenTime (datos del cliente). Llegan tal cual,
       todas las columnas en texto, con dos metadatos: _fichero_origen y _loaded_at.
-    database: "{{ env_var('DBT_BRONZE_DB') }}"   # el mismo YAML sirve en DEV, PRE y PRO
+    database: "{{ env_var('DBT_BRONZE_DB') }}"   
     schema: ERP
     config:
       loaded_at_field: _loaded_at
-      freshness:                 # histórico cerrado cargado una vez (ver diario)
+      freshness:                 # histórico cerrado cargado una vez 
         warn_after: {count: 15, period: day}
         error_after: {count: 30, period: day}
 
