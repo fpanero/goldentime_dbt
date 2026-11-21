@@ -1,0 +1,56 @@
+campo,valor_original,valor_limpio
+estado,SIN USAR,Sin usar
+estado,UNWORN,Sin usar
+estado,NUEVO,Sin usar
+estado,MUY BUENO,Muy bueno
+estado,MB,Muy bueno
+estado,VERY GOOD,Muy bueno
+estado,BUENO,Bueno
+estado,B,Bueno
+estado,GOOD,Bueno
+estado,ACEPTABLE,Aceptable
+estado,REGULAR,Aceptable
+estado,DEFICIENTE,Deficiente
+estado,MALO,Deficiente
+moneda,EUR,EUR
+moneda,EURO,EUR
+moneda,€,EUR
+moneda,CHF,CHF
+moneda,FR.,CHF
+moneda,GBP,GBP
+moneda,£,GBP
+moneda,USD,USD
+moneda,$,USD
+moneda,US$,USD
+pais,ESPAÑA,España
+pais,ES,España
+pais,SPAIN,España
+pais,FRANCIA,Francia
+pais,FR,Francia
+pais,FRANCE,Francia
+pais,SUIZA,Suiza
+pais,CH,Suiza
+pais,SCHWEIZ,Suiza
+pais,SWITZERLAND,Suiza
+pais,REINO UNIDO,Reino Unido
+pais,UK,Reino Unido
+pais,GB,Reino Unido
+pais,UNITED KINGDOM,Reino Unido
+pais,ITALIA,Italia
+pais,IT,Italia
+pais,ITALY,Italia
+pais,ALEMANIA,Alemania
+pais,DE,Alemania
+pais,DEUTSCHLAND,Alemania
+pais,GERMANY,Alemania
+pais,PAÍSES BAJOS,Países Bajos
+pais,NL,Países Bajos
+pais,HOLANDA,Países Bajos
+pais,NETHERLANDS,Países Bajos
+pais,MÓNACO,Mónaco
+pais,BÉLGICA,Bélgica
+pais,PORTUGAL,Portugal
+pais,AUSTRIA,Austria
+pais,ESTADOS UNIDOS,Estados Unidos
+pais,HONG KONG,Hong Kong
+pais,EMIRATOS ÁRABES,Emiratos Árabes

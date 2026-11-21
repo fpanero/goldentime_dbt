@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: slv_bce__tipo_cambio
+    description: >
+      Tipos de cambio oficiales del BCE en formato largo. 1 fila = una moneda
+      en un día hábil (CHF, GBP y USD, 2019–2025: 5.379 filas).
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['fecha', 'codigo_moneda']
+    columns:
+      - name: fecha
+        data_tests: [not_null]
+      - name: codigo_moneda
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['CHF', 'GBP', 'USD']
+          - relationships:
+              arguments:
+                to: ref('moneda')
+                field: codigo_moneda
+      - name: unidades_por_euro
+        description: Unidades de la moneda por 1 euro (1 EUR = x).
+        data_tests: [not_null]

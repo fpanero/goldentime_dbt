@@ -1,0 +1,46 @@
+version: 2
+
+seeds:
+  - name: moneda
+    description: >
+      Las 4 monedas del negocio (EUR, CHF, GBP en tiendas; USD en dealers y
+      en Chrono24). No existen como tabla en el origen: catálogo pequeño y fijo,
+      el caso de uso de los seeds visto en clase.
+    columns:
+      - name: codigo_moneda
+        description: Código ISO 4217.
+        data_tests: [not_null, unique]
+
+  - name: correccion_nombre_modelo
+    description: >
+      Erratas del nombre del modelo en el catálogo del ERP (letra que falta:
+      "Dtejust 36", "Nutilus"...) y su nombre correcto. 15 encontradas
+      comparando cada nombre con los parecidos. Si aparece otra, se añade
+      una línea aquí, sin tocar SQL.
+    columns:
+      - name: nombre_erroneo
+        data_tests: [not_null, unique]
+      - name: nombre_correcto
+        data_tests: [not_null]
+
+  - name: diccionario_valores
+    description: >
+      Diccionario de limpieza: cada forma en que el ERP escribe un valor
+      (en MAYÚSCULAS, para comparar sin importar mayúsculas) y su valor limpio.
+      Campos: estado (18 escrituras → 5), moneda (14 → 4) y pais (34 → 14).
+      Las tablas de Silver lo cruzan con un left join: si aparece una escritura
+      nueva, sale NULL, el test not_null de Silver avisa y se añade una línea aquí.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['campo', 'valor_original']
+    columns:
+      - name: campo
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['estado', 'moneda', 'pais']
+      - name: valor_original
+        data_tests: [not_null]
+      - name: valor_limpio
+        data_tests: [not_null]
