@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: int_tipo_cambio__diario
+    description: >
+      Tipo de cambio de cada moneda en cada día de 2019 a 2025, con fines de
+      semana y festivos rellenos con el último tipo publicado. EUR vale 1.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['fecha', 'codigo_moneda']
+    columns:
+      - name: unidades_por_euro
+        description: Unidades de la moneda por 1 euro. Importe en euros = importe / unidades_por_euro.
+        data_tests: [not_null]
+
+  - name: int_taller__por_reloj
+    description: Coste de taller por reloj, por tipo de intervención, y nº de intervenciones.
+    columns:
+      - name: id_reloj_fisico
+        data_tests: [not_null, unique]
+
+  - name: int_rebajas__por_reloj
+    description: Nº de rebajas y primer precio de vitrina (en su moneda) por reloj.
+    columns:
+      - name: id_reloj_fisico
+        data_tests: [not_null, unique]
+
+  - name: int_mercado__por_modelo
+    description: Mediana del precio pedido en Chrono24 (en euros) y nº de anuncios por modelo del catálogo.
+    columns:
+      - name: id_modelo_reloj
+        data_tests: [not_null, unique]
+      - name: precio_mercado_eur
+        data_tests: [not_null]
