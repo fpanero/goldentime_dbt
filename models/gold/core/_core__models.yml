@@ -1,0 +1,132 @@
+version: 2
+
+models:
+  - name: dim_fecha
+    description: Calendario de 2019 a 2025. Una fila por día.
+    columns:
+      - name: fecha_key
+        description: Fecha como número AAAAMMDD (clave de los hechos).
+        data_tests: [not_null, unique]
+      - name: fecha
+        data_tests: [not_null, unique]
+
+  - name: dim_tienda
+    description: Tiendas y canal online.
+    columns:
+      - name: id_tienda
+        data_tests: [not_null, unique]
+      - name: moneda_local
+        description: Moneda en la que opera la tienda.
+
+  - name: dim_modelo_reloj
+    description: Modelos del catálogo con su marca y el nº de anuncios de Chrono24 que respaldan su precio de mercado.
+    columns:
+      - name: id_modelo_reloj
+        data_tests: [not_null, unique]
+      - name: marca
+        data_tests: [not_null]
+      - name: num_anuncios_mercado
+        description: Anuncios de Chrono24 del modelo (julio 2023). NULL si no aparece en Chrono24. Para filtrar por fiabilidad.
+
+  - name: dim_reloj
+    description: Relojes concretos con su estado, caja y papeles.
+    columns:
+      - name: id_reloj_fisico
+        data_tests: [not_null, unique]
+      - name: estado
+        data_tests: [not_null]
+
+  - name: fct_ventas
+    description: Ventas de relojes con su margen real en euros. Una fila por venta. Incremental (merge por id_venta).
+    columns:
+      - name: id_venta
+        data_tests: [not_null, unique]
+      - name: fecha_venta_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_fecha')
+                field: fecha_key
+      - name: fecha_compra_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_fecha')
+                field: fecha_key
+      - name: id_reloj_fisico
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_reloj')
+                field: id_reloj_fisico
+      - name: id_modelo_reloj
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_modelo_reloj')
+                field: id_modelo_reloj
+      - name: id_tienda
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_tienda')
+                field: id_tienda
+      - name: tipo_proveedor
+        description: A quién se compró el reloj (Particular o Dealer).
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Particular', 'Dealer']
+      - name: margen_real_eur
+        description: Precio de venta − precio de compra − costes de taller, en euros.
+        data_tests: [not_null]
+      - name: primer_precio_vitrina_eur
+        description: Precio con el que salió a la venta, al tipo de cambio del día de la venta.
+      - name: dias_en_stock
+        description: Días entre la compra y la venta.
+        data_tests: [not_null]
+
+  - name: fct_compras
+    description: Compras de relojes, vendidos o no. Una fila por compra.
+    columns:
+      - name: id_compra
+        data_tests: [not_null, unique]
+      - name: fecha_compra_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_fecha')
+                field: fecha_key
+      - name: id_reloj_fisico
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_reloj')
+                field: id_reloj_fisico
+      - name: id_modelo_reloj
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_modelo_reloj')
+                field: id_modelo_reloj
+      - name: id_tienda
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_tienda')
+                field: id_tienda
+      - name: precio_compra_eur
+        data_tests: [not_null]
+      - name: precio_mercado_eur
+        description: Mediana de Chrono24 del modelo en euros (julio 2023). NULL si el modelo no tiene anuncios.
+      - name: dias_sin_vender
+        description: Días en tienda a 31/12/2025. NULL si el reloj se vendió.
