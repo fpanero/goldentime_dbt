@@ -3,10 +3,16 @@
 -- Silver: limpia los valores del CRM. No une, no filtra.
 --   - país: 34 escrituras ("ES", "Spain", "españa"...) → 14 países, con el
 --     seed diccionario_valores.
---   - email: minúsculas, sin espacios, "@@" → "@"; es_email_valido marca los
---     que siguen sin ser un email (por ejemplo, sin @): no se inventan.
 --   - teléfono: 4 formatos → uno solo, internacional (+34600966230).
 -- =============================================================================
+
+{{ config(
+    post_hook="alter table {{ this }}
+        modify column nombre    set masking policy {{ env_var('DBT_SILVER_DB') }}.governance.pii_texto,
+               column apellidos set masking policy {{ env_var('DBT_SILVER_DB') }}.governance.pii_texto,
+               column email     set masking policy {{ env_var('DBT_SILVER_DB') }}.governance.pii_email,
+               column telefono  set masking policy {{ env_var('DBT_SILVER_DB') }}.governance.pii_texto"
+) }}
 
 with contactos as (
 
