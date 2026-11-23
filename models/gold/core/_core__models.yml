@@ -82,14 +82,21 @@ models:
           - accepted_values:
               arguments:
                 values: ['Particular', 'Dealer']
+      - name: precio_compra_eur
+        data_tests: [not_null, min_value]
+      - name: precio_venta_eur
+        data_tests: [not_null, min_value]
       - name: margen_real_eur
         description: Precio de venta − precio de compra − costes de taller, en euros.
         data_tests: [not_null]
+      - name: num_rebajas
+        data_tests: [min_value]
       - name: primer_precio_vitrina_eur
         description: Precio con el que salió a la venta, al tipo de cambio del día de la venta.
       - name: dias_en_stock
         description: Días entre la compra y la venta.
         data_tests: [not_null]
+        
 
   - name: fct_compras
     description: Compras de relojes, vendidos o no. Una fila por compra.
@@ -125,7 +132,7 @@ models:
                 to: ref('dim_tienda')
                 field: id_tienda
       - name: precio_compra_eur
-        data_tests: [not_null]
+        data_tests: [not_null, min_value]
       - name: precio_mercado_eur
         description: Mediana de Chrono24 del modelo en euros (julio 2023). NULL si el modelo no tiene anuncios.
       - name: dias_sin_vender
