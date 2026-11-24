@@ -1,11 +1,11 @@
--- Una fila = un día de 2019 a 2025. Calendario común a los tres hechos.
+-- Una fila = un día de 2019 a 2026. Calendario común a los dos hechos.
 
 with dias as (
 
     {{ dbt_utils.date_spine(
         datepart="day",
         start_date="cast('2019-01-01' as date)",
-        end_date="cast('2026-01-01' as date)"
+        end_date="cast('2027-01-01' as date)"
     ) }}
 
 )
