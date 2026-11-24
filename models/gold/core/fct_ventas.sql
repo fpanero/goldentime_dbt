@@ -1,5 +1,6 @@
 -- Una fila = una venta. Importes en euros al tipo de cambio del día de cada operación.
--- Incremental: cada ejecución procesa solo las ventas nuevas (y repasa los últimos 7 días).
+-- Incremental, igual que slv_erp__venta (1 hora de margen sobre loaded_at, merge por id_venta):
+-- toda la cadena de ventas es incremental.
 
 {{ config(
     materialized='incremental',
@@ -11,10 +12,7 @@ with ventas as (
 
     select * from {{ ref('slv_erp__venta') }}
     {% if is_incremental() %}
-    where fecha_venta >= (
-        select dateadd(day, -7, to_date(to_varchar(max(fecha_venta_key)), 'YYYYMMDD'))
-        from {{ this }}
-    )
+    where loaded_at > (select dateadd('hour', -1, max(loaded_at)) from {{ this }})
     {% endif %}
 
 ),
@@ -76,6 +74,7 @@ unidas as (
         , coalesce(rb.primer_precio_vitrina, v.precio_lista) / tv.unidades_por_euro
                                                                            as primer_precio_vitrina_eur
         , coalesce(rb.num_rebajas, 0)                                      as num_rebajas
+        , v.loaded_at
     from ventas v
     inner join compras c      on v.id_reloj_fisico = c.id_reloj_fisico
     inner join relojes r      on v.id_reloj_fisico = r.id_reloj_fisico
@@ -108,4 +107,5 @@ select
     , round(primer_precio_vitrina_eur, 2)                                 as primer_precio_vitrina_eur
     , num_rebajas
     , datediff(day, fecha_compra, fecha_venta)                            as dias_en_stock
+    , loaded_at                                                           -- técnica: cuándo llegó a Bronze
 from unidas

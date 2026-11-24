@@ -6,13 +6,7 @@
 --   - teléfono: 4 formatos → uno solo, internacional (+34600966230).
 -- =============================================================================
 
-{{ config(
-    post_hook="alter table {{ this }}
-        modify column nombre    set masking policy {{ env_var('DBT_SILVER_DB') }}.governance.pii_texto,
-               column apellidos set masking policy {{ env_var('DBT_SILVER_DB') }}.governance.pii_texto,
-               column email     set masking policy {{ env_var('DBT_SILVER_DB') }}.governance.pii_email,
-               column telefono  set masking policy {{ env_var('DBT_SILVER_DB') }}.governance.pii_texto"
-) }}
+{{ config(post_hook="{{ aplicar_masking_contacto() }}") }}
 
 with contactos as (
 

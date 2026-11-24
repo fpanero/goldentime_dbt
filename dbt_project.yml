@@ -54,3 +54,16 @@ seeds:
   goldentime:
     +database: "{{ env_var('DBT_SILVER_DB') }}"
     +schema: seeds
+    moneda:
+      +column_types:                 # tipos fijos: dbt no los adivina del CSV
+        codigo_moneda: varchar(3)
+        nombre_moneda: varchar(50)
+    correccion_nombre_modelo:
+      +column_types:
+        nombre_erroneo: varchar(100)
+        nombre_correcto: varchar(100)
+    diccionario_valores:
+      +column_types:
+        campo: varchar(20)
+        valor_original: varchar(50)
+        valor_limpio: varchar(50)

@@ -1,0 +1,43 @@
+# Exposures: quién consume Gold fuera de dbt. No crean nada en Snowflake;
+# aparecen al final del linaje y se pueden seleccionar: dbt build --select +exposure:dashboard_powerbi
+
+version: 2
+
+exposures:
+  - name: dashboard_powerbi
+    label: Dashboard GoldenTime (Power BI)
+    type: dashboard
+    maturity: medium
+    description: >
+      Los 3 casos de uso (margen real, rotación y precio frente al mercado).
+      Lee Gold de PRO con GT_REPORTING_ROLE, en modo importación.
+    depends_on:
+      - ref('fct_ventas')
+      - ref('fct_compras')
+      - ref('dim_fecha')
+      - ref('dim_modelo_reloj')
+      - ref('dim_tienda')
+      - ref('dim_reloj')
+    owner:
+      name: Equipo de Datos GoldenTime (Cívica)
+      email: datos-goldentime@ejemplo.com
+
+
+#si me da el tiempo, hago lo de debajo
+  - name: dashboard_html
+    label: Dashboard GoldenTime (HTML en vivo)
+    type: application
+    maturity: low
+    description: >
+      Página web propia que consulta Gold de PRO en vivo a través de una API
+      en Python, con GT_REPORTING_ROLE.
+    depends_on:
+      - ref('fct_ventas')
+      - ref('fct_compras')
+      - ref('dim_fecha')
+      - ref('dim_modelo_reloj')
+      - ref('dim_tienda')
+      - ref('dim_reloj')
+    owner:
+      name: Equipo de Datos GoldenTime (Cívica)
+      email: datos-goldentime@ejemplo.com
